@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<title>Social Downloader</title>
+
+	<style type="text/css">
+		
+		#input-field {
+			width: 50%;
+		}
+
+		@media only screen and (max-width: 600px) {
+			#page-title {
+				font-size: 23px;
+			}
+
+			#input-field {
+				width: 75%;
+			}
+
+		 	#illustration {
+		 		width: 410px;
+		 	} 
+		}
+
+		.lds-facebook {
+		  display: inline-block;
+		  position: relative;
+		  width: 80px;
+		  height: 80px;
+		}
+		.lds-facebook div {
+		  display: inline-block;
+		  position: absolute;
+		  left: 8px;
+		  width: 16px;
+		  background: #fff;
+		  animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+		}
+		.lds-facebook div:nth-child(1) {
+		  left: 8px;
+		  animation-delay: -0.24s;
+		}
+		.lds-facebook div:nth-child(2) {
+		  left: 32px;
+		  animation-delay: -0.12s;
+		}
+		.lds-facebook div:nth-child(3) {
+		  left: 56px;
+		  animation-delay: 0;
+		}
+		@keyframes lds-facebook {
+		  0% {
+		    top: 8px;
+		    height: 64px;
+		  }
+		  50%, 100% {
+		    top: 24px;
+		    height: 32px;
+		  }
+		}
+
+
+	</style>
+</head>
+<body class="bg-dark">
+
+	{% include "navbar.html" %}
+
+	<div class="container mt-5 text-center" id="main-container">
+		<h3 id="page-title" class="text-white">Free Online Insta Downloader</h3>
+		<br>
+
+		<form class="form-inline" style="justify-content: center;" id="input-form">
+		  <div id="input-field" class="form-group mx-sm-2 mb-2">
+		    <input type="text" class="form-control w-100" id="userquery" placeholder="Paste Video Link Here...">
+		  </div>
+		  <button type="submit" class="btn btn-primary mb-2">
+		  	Submit
+		  </button>
+		</form>
+
+		<a href="" id="download-btn" class="btn btn-success" style="display:none;">
+			Download <svg fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"></path><path d="M7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"></path></svg>
+		</a>
+
+		<br>
+
+		<img id="illustration" src="https://www.pngall.com/wp-content/uploads/12/Illustration-PNG-Photo.png" width="600px" />
+	</div>
+
+	<div class="container text-center" id="loader-container" style="display:none;margin-top: 40px;">
+		<p style="font-size: 23px;" class="text-white mt-5">Preparing Download...</p>
+		<div class="lds-facebook"><div></div><div></div><div></div></div>
+	</div>
+
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+			
+		function applyLoader() {
+			document.querySelector("#main-container").style.display = "none";
+			document.querySelector("#loader-container").style.display = "block";
+		}
+
+		function destroyLoader() {
+			document.querySelector("#loader-container").style.display = "none";
+			document.querySelector("#main-container").style.display = "block";
+		}
+
+		document.querySelector("#input-form").addEventListener('submit', (event) => {
+			event.preventDefault();
+			let query = event.target.querySelector('#userquery').value
+			event.target.reset();
+
+			let xhttp = new XMLHttpRequest();
+
+			applyLoader()
+
+		    xhttp.onreadystatechange = function() {
+		        if (this.readyState == 4 && this.status == 200) {
+		            let results = JSON.parse(this.responseText);
+		            document.querySelector("#download-btn").href = `http://127.0.0.1:8000/social/download/${results['filename']}/`;
+		            document.querySelector("#download-btn").style.display = 'inline-block';
+		            destroyLoader()
+		        }
+		    }
+		    xhttp.open('GET', `http://127.0.0.1:8000/social/start/?query=${query}`, true);
+		    xhttp.send();
+
+		})
+
+	</script>
+
+</body>
+</html>
